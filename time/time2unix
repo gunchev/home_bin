@@ -1,0 +1,8 @@
+#!/bin/bash
+
+ht="${1:-now}"
+ut="$(date '+%s' -d "$ht")"
+echo "Human Time: $ht"
+echo "Unix Time : $ut"
+ht="$(date -d "@$ut")"
+echo "Human Time: $ht"
