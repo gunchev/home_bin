@@ -25,44 +25,56 @@ Based on Brad Watson's work mkimage.py from
   http://qemu.dad-answers.com/download/qemu/utilities/QEMU-HD-Create/
 """
 
-__version__   = "0.1"
+import os.path
+import re
+import sys
+
+__version__   = "0.2"
 __author__    = "Doncho Gunchev <gunchev@gmail.com>, Brad Watson"
 __depends__   = ['Python-2.4']
 #__copyright__ = """Have to ask Brad Watson, GPL?"""
 
 
+class MkSparseError(Exception):
+    """MkSpace errors"""
+
+    pass
+
 
 def mk_sparse(file_name, file_size):
     """ Create a sparse file by truncating it at given position"""
     try:
-        f = open(sys.argv[1],"wb+")
-    except Exception, e:
-        raise Exception("Error: Can't create file '" + file_name + "':\n" + str(e))
+        sparse_file = open(sys.argv[1],"wb+")
+    except (IOError, OSError), exc:
+        raise MkSparseError("Error: Can't create file '" + file_name + "':\n"
+                + str(exc))
     else:
         try:
             # Note that I don't wan (you too) to write() anything in the file
             # because this will consume at least one sector/block.
-            f.truncate(int(file_size))
-        except Exception, e:
-            f.close() # clean the mess... TODO: more checks if this does not fail?
-            os.unlink(sys.argv[1])
-            raise Exception("Error: Can't truncate '%s'\n%s" % (file_name, str(e)))
-    try: # Hmm, do I need this at all? Maybe yes (judging from the strange errors
-        # that occure in gzip at object destruction)
-        f.close()
-    except Exception, e:
-        raise Exception("Error: Can't close '%s'\n%s" % (file_name, str(e)))
+            sparse_file.truncate(int(file_size))
+        except (IOError, OSError), exc:
+            try:
+                sparse_file.close() # clean the mess...
+                os.unlink(sys.argv[1])
+            except (IOError, OSError):
+                pass
+            raise MkSparseError("Error: Can't truncate '%s'\n%s"
+                    % (file_name, str(exc)))
+    try:
+        sparse_file.close()
+    except (IOError, OSError), exc:
+        raise MkSparseError("Error: Can't close '%s'\n%s" % (file_name,
+                str(exc)))
 
 
-
-if __name__ == "__main__":
-    import os.path
-    import re
-    import sys
+def main():
+    """The main function for a command line execution"""
 
     if len(sys.argv) != 3:
         # .pyo (docstrings stripped) workaround
-        print >> sys.stderr, __doc__ and __doc__ or "Usage: mksparse.py <image-name> <size>[kmg]"
+        print >> sys.stderr, (__doc__ and __doc__
+                or "Usage: mksparse.py <image-name> <size>[kmg]")
         print >> sys.stderr, "Version:", __version__
         sys.exit(1)
 
@@ -72,7 +84,7 @@ if __name__ == "__main__":
     # validate file size
     try:
         (size, dim) = re.match('^(\d+)([KkMmGg])?$', file_size).groups()
-    except Exception, e:
+    except TypeError:
         print >> sys.stderr, (sys.argv[0] + ': '
             + "Bad image size given: " + repr(file_size))
         sys.exit(2)
@@ -100,6 +112,10 @@ if __name__ == "__main__":
     file_size = size
     try:
         mk_sparse(file_name, file_size)
-    except Exception, e:
-        print >> sys.stderr, sys.argv[0] + ': ' + str(e)
+    except MkSparseError, exc:
+        print >> sys.stderr, sys.argv[0] + ': ' + str(exc)
         sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
