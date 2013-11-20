@@ -7,6 +7,7 @@ mksparse.py - sparse file / disk image creator
 ==============================================
 
 Usage: mksparse.py <imagefile.img> <size>[k|m|g]
+
     This will create <imagefile.img> with size <size>. If the suffix is
 not given then the size is in bytes, 'k' stands for kilobytes (1024),
 'm' for megabytes and 'g' for gigabyes (K/M/G are not implemented, one
@@ -15,7 +16,7 @@ can type 000 easy enough).
 Simple python script that creates sparse files on unix / Win2k NTFS5.
 This script opens a file for writing, seeks at the desired position
 (or file size) and truncates the file there. Can be handy while
-playing with qemu / bochs / loopback images.
+playing with KVM / qemu / bochs / loopback images.
 
 Tested on linux-2.6 only.
 
