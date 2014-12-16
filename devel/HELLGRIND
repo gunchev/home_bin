@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# G_SLICE=always-malloc G_DEBUG=gc-friendly \
+
+valgrind --tool=helgrind --track-lockorders=yes --history-level=full --conflict-cache-size=1000000 "$@"

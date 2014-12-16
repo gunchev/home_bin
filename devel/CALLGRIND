@@ -1,0 +1,4 @@
+#!/bin/bash
+
+G_SLICE=always-malloc G_DEBUG=gc-friendly \
+valgrind --tool=callgrind --trace-children=no --num-callers=32 --track-fds=yes --error-exitcode=1 --dump-instr=yes --collect-jumps=yes --simulate-cache=yes --simulate-hwpref=yes "$@"
