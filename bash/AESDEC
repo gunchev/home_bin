@@ -1,0 +1,44 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+	echo "Usage: $0 file_to_decrypt.aes [another_file_to_decrypt.aes]*"
+	exit 1
+fi
+
+# TODO, use mktemp and -pass file:/tmp/tempfile to pass the password
+read -ersp "Enter password: " P
+echo
+
+while [ ! -z "$1" ]; do
+	INFILE="$1"
+	OUTFILE="${1%.aes}"
+
+	if [ "$INFILE" = "$OUTFILE" ]; then
+		echo "The input file does not end with .aes"
+		shift
+		continue
+	fi
+
+	if [ -e "$OUTFILE" ]; then
+		echo "$OUTFILE exists, will not overwrite"
+		shift
+		continue
+	fi
+
+	if [ ! -f "$INFILE" ]; then
+		echo "$INFILE does not exist, can not decrypt"
+		shift
+		continue
+	fi
+
+	echo "Processing $INFILE..."
+	if which bar > /dev/null 2>&1; then
+		bar -dan -if "$INFILE" | openssl enc -d -aes-256-cbc -salt -pass pass:"$P" > "$OUTFILE"
+	else
+		echo -n "Please wait..."
+		openssl enc -d -aes-256-cbc -salt -pass pass:"$P" < "$INFILE" > "$OUTFILE"
+		echo " done."
+	fi
+
+	shift
+done
