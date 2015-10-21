@@ -1,0 +1,3 @@
+#!/bin/bash
+
+setxkbmap -model -layout us,bg -variant ,phonetic -option grp_led:caps,grp:caps_toggle
