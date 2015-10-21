@@ -1,0 +1,114 @@
+#!/bin/bash
+#
+#   This file echoes a bunch of colour codes to the terminal to demonstrate
+#   what's available.  Each line is one colour on black and gray
+#   backgrounds, with the code in the middle.  Verified to work on white,
+#   black, and green BGs (2 Dec 98).
+#
+echo "  On Light Gray:        On Black:"
+echo -e "\033[47m\033[1;37m  White        \033[0m 1;37m \033[40m\033[1;37m  White        \033[0m"
+echo -e "\033[47m\033[37m  Light Gray   \033[0m   37m \033[40m\033[37m  Light Gray   \033[0m"
+echo -e "\033[47m\033[1;30m  Gray         \033[0m 1;30m \033[40m\033[1;30m  Gray         \033[0m"
+echo -e "\033[47m\033[30m  Black        \033[0m   30m \033[40m\033[30m  Black        \033[0m"
+echo -e "\033[47m\033[31m  Red          \033[0m   31m \033[40m\033[31m  Red          \033[0m"
+echo -e "\033[47m\033[1;31m  Light Red    \033[0m 1;31m \033[40m\033[1;31m  Light Red    \033[0m"
+echo -e "\033[47m\033[32m  Green        \033[0m   32m \033[40m\033[32m  Green        \033[0m"
+echo -e "\033[47m\033[1;32m  Light Green  \033[0m 1;32m \033[40m\033[1;32m  Light Green  \033[0m"
+echo -e "\033[47m\033[33m  Brown        \033[0m   33m \033[40m\033[33m  Brown        \033[0m"
+echo -e "\033[47m\033[1;33m  Yellow       \033[0m 1;33m \033[40m\033[1;33m  Yellow       \033[0m"
+echo -e "\033[47m\033[34m  Blue         \033[0m   34m \033[40m\033[34m  Blue         \033[0m"
+echo -e "\033[47m\033[1;34m  Light Blue   \033[0m 1;34m \033[40m\033[1;34m  Light Blue   \033[0m"
+echo -e "\033[47m\033[35m  Purple       \033[0m   35m \033[40m\033[35m  Purple       \033[0m"
+echo -e "\033[47m\033[1;35m  Pink         \033[0m 1;35m \033[40m\033[1;35m  Pink         \033[0m"
+echo -e "\033[47m\033[36m  Cyan         \033[0m   36m \033[40m\033[36m  Cyan         \033[0m"
+echo -e "\033[47m\033[1;36m  Light Cyan   \033[0m 1;36m \033[40m\033[1;36m  Light Cyan   \033[0m"
+#
+#   This file echoes a bunch of color codes to the 
+#   terminal to demonstrate what's available.  Each 
+#   line is the color code of one forground color,
+#   out of 17 (default + 16 escapes), followed by a 
+#   test use of that color on all nine background 
+#   colors (default + 8 escapes).
+#
+
+T='gYw'   # The test text
+
+echo
+echo "                 40m     41m     42m     43m     44m     45m     46m     47m";
+
+for FGs in '    m' '   1m' '  30m' '1;30m' '  31m' '1;31m' '  32m' \
+           '1;32m' '  33m' '1;33m' '  34m' '1;34m' '  35m' '1;35m' \
+           '  36m' '1;36m' '  37m' '1;37m';
+  do FG=${FGs// /}
+  echo -en " $FGs \033[$FG  $T  "
+  for BG in 40m 41m 42m 43m 44m 45m 46m 47m;
+    do echo -en "$EINS \033[$FG\033[$BG  $T  \033[0m";
+  done
+  echo;
+done
+echo
+
+# #- Position the Cursor:
+# #  \033[<L>;<C>H
+# #     Or
+# #  \033[<L>;<C>f
+# #  puts the cursor at line L and column C.
+# #- Move the cursor up N lines:
+# #  \033[<N>A
+# #- Move the cursor down N lines:
+# #  \033[<N>B
+# #- Move the cursor forward N columns:
+# #  \033[<N>C
+# #- Move the cursor backward N columns:
+# #  \033[<N>D
+# #
+# #- Clear the screen, move to (0,0):
+# #  \033[2J
+# #- Erase to end of line:
+# #  \033[K
+# #
+# #- Save cursor position:
+# #  \033[s
+# #- Restore cursor position:
+# #  \033[u
+# #
+# #
+# #       When  executing  interactively,  bash displays the primary
+# #       prompt PS1 when it is ready to read  a  command,  and  the
+# #       secondary  prompt PS2 when it needs more input to complete
+# #       a command.  Bash allows these prompt strings  to  be
+# #       customized by inserting a number of backslash-escaped special
+# #       characters that are decoded as follows:
+# #              \a     an ASCII bell character (07)
+# #              \d     the date  in  "Weekday  Month  Date"  format
+# #                     (e.g., "Tue May 26")
+# #              \e     an ASCII escape character (033)
+# #              \h     the hostname up to the first `.'
+# #              \H     the hostname
+# #              \j     the  number of jobs currently managed by the
+# #                     shell
+# #              \l     the basename of the shell's terminal  device
+# #                     name
+# #              \n     newline
+# #              \r     carriage return
+# #              \s     the  name  of  the shell, the basename of $0
+# #                     (the portion following the final slash)
+# #              \t     the current time in 24-hour HH:MM:SS format
+# #              \T     the current time in 12-hour HH:MM:SS format
+# #              \@     the current time in 12-hour am/pm format
+# #              \u     the username of the current user
+# #              \v     the version of bash (e.g., 2.00)
+# #              \V     the release of bash,  version  +  patchlevel
+# #                     (e.g., 2.00.0)
+# #              \w     the current working directory
+# #              \W     the  basename  of the current working directory
+# #              \!     the history number of this command
+# #              \#     the command number of this command
+# #              \$     if the effective UID is 0, a #, otherwise  a
+# #                     $
+# #              \nnn   the  character  corresponding  to  the octal
+# #                     number nnn
+# #              \\     a backslash
+# #              \[     begin a sequence of non-printing characters,
+# #                     which could be used to embed a terminal control sequence into the prompt
+# #              \]     end a sequence of non-printing characters
