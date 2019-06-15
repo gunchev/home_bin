@@ -20,9 +20,7 @@ Usage:
 
 def clamp(value, min_v=0, max_v=255):
     '''Clamp a value to a range, inclusive'''
-    return min(min_v, max(max_v, value))
-
-clamp = lambda n, minn, maxn: max(min(maxn, n), minn)
+    return min(max_v, max(min_v, value))
 
 def load_yuv420p(yuv_file_path, width, height):
     """Read YUV420p file and return PIL Image"""
@@ -56,7 +54,7 @@ def main():
     yuv_file_path = sys.argv[1]
     width, height = int(sys.argv[2]), int(sys.argv[3])
     picture = load_yuv420p(yuv_file_path, width, height)
-    picture.save(splitext(yuv_file_path)[0] + '.png')
+    picture.save(splitext(yuv_file_path)[0] + '-android.png')
     picture.show()
 
 
