@@ -6,8 +6,6 @@
 #   black, and green BGs (2 Dec 98).
 #
 echo "  On Light Gray:        On Black:"
-echo -e "\033[47m\033[1;37m  White        \033[0m 1;37m \033[40m\033[1;37m  White        \033[0m"
-echo -e "\033[47m\033[37m  Light Gray   \033[0m   37m \033[40m\033[37m  Light Gray   \033[0m"
 echo -e "\033[47m\033[1;30m  Gray         \033[0m 1;30m \033[40m\033[1;30m  Gray         \033[0m"
 echo -e "\033[47m\033[30m  Black        \033[0m   30m \033[40m\033[30m  Black        \033[0m"
 echo -e "\033[47m\033[31m  Red          \033[0m   31m \033[40m\033[31m  Red          \033[0m"
@@ -22,12 +20,14 @@ echo -e "\033[47m\033[35m  Purple       \033[0m   35m \033[40m\033[35m  Purple  
 echo -e "\033[47m\033[1;35m  Pink         \033[0m 1;35m \033[40m\033[1;35m  Pink         \033[0m"
 echo -e "\033[47m\033[36m  Cyan         \033[0m   36m \033[40m\033[36m  Cyan         \033[0m"
 echo -e "\033[47m\033[1;36m  Light Cyan   \033[0m 1;36m \033[40m\033[1;36m  Light Cyan   \033[0m"
+echo -e "\033[47m\033[37m  Light Gray   \033[0m   37m \033[40m\033[37m  Light Gray   \033[0m"
+echo -e "\033[47m\033[1;37m  White        \033[0m 1;37m \033[40m\033[1;37m  White        \033[0m"
 #
-#   This file echoes a bunch of color codes to the 
-#   terminal to demonstrate what's available.  Each 
+#   This file echoes a bunch of color codes to the
+#   terminal to demonstrate what's available.  Each
 #   line is the color code of one forground color,
-#   out of 17 (default + 16 escapes), followed by a 
-#   test use of that color on all nine background 
+#   out of 17 (default + 16 escapes), followed by a
+#   test use of that color on all nine background
 #   colors (default + 8 escapes).
 #
 
