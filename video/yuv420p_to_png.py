@@ -23,28 +23,26 @@ def load_yuv420p(yuv_file_path, width, height):
     """Read YUV420p file and return PIL Image"""
     yuv_file = open(yuv_file_path, "rb")
 
-    y_data = array('B')
-    y_data.fromfile(yuv_file, height * width)
-    u_data = array('B')
-    u_data.fromfile(yuv_file, (height // 2) * (width // 2))
-    v_data = array('B')
-    v_data.fromfile(yuv_file, (height // 2) * (width // 2))
+    y_data_size = height * width
+    uv_data_size = y_data_size // 4
+    yuv_data = array('B')
+    yuv_data.fromfile(yuv_file, y_data_size + 2 * uv_data_size)
 
     result = Image.new("RGB", (width, height))
     pixels = result.load()
-    for i in range(height):
-        for j in range(width):
-            y_value = (y_data[(i * width) + j] - 16) * 1.164
-            offset = ((i // 2) * (width // 2)) + (j // 2)
-            u_value = u_data[offset] - 128
-            v_value = v_data[offset] - 128
+    for y in range(height):
+        for x in range(width):
+            y_value = (yuv_data[(y * width) + x] - 16) * 1.164
+            offset = y_data_size + ((y // 2) * (width // 2)) + (x // 2)
+            u_value = yuv_data[offset] - 128
+            v_value = yuv_data[offset + uv_data_size] - 128
             # B = 1.164(Y - 16)                  + 2.018(U - 128)
             # G = 1.164(Y - 16) - 0.813(V - 128) - 0.391(U - 128)
             # R = 1.164(Y - 16) + 1.596(V - 128)
             b_value = y_value + 2.018 * u_value
             g_value = y_value - 0.813 * v_value - 0.391 * u_value
             r_value = y_value + 1.596 * v_value
-            pixels[j, i] = (int(r_value), int(g_value), int(b_value))
+            pixels[x, y] = (int(r_value), int(g_value), int(b_value))
 
     return result
 
