@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# https://wiki.archlinux.org/index.php/Touchpad_Synaptics#Synclient
+
+declare -i ID
+ID=$(xinput list | grep -iEo 'Touchpad\s*id\=[0-9]{1,4}' | grep -Eo '[0-9]{1,4}')
+declare -i STATE
+STATE=$(xinput list-props $ID|grep 'Device Enabled'|awk '{print $4}')
+if [ $STATE -eq 1 ]
+then
+    xinput disable $ID
+    # echo "Touchpad disabled."
+    notify-send --urgency=critical --expire-time=2000 --app-name=TouchPad \
+        --icon='/usr/share/icons/HighContrast/48x48/devices/input-touchpad.png' \
+        'Touchpad' "Disabled $ID"
+else
+    xinput enable $ID
+    # echo "Touchpad enabled."
+    #notify-send -t 1500 -u critical 'Touchpad' 'Enabled' -i /usr/share/icons/HighContrast/48x48/devices/input-touchpad.png
+    notify-send --urgency=normal --expire-time=2000 --app-name=TouchPad \
+        --icon='/usr/share/icons/HighContrast/48x48/devices/input-touchpad.png' \
+        'Touchpad' "Enabled $ID"
+fi
+
