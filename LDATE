@@ -1,0 +1,4 @@
+#!/bin/sh
+
+set -x
+date '+%Y-%m-%d %H:%M:%S %z %Z' "$@"

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+LC_ALL="C" date +'%a %b %d %Y'
