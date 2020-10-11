@@ -18,7 +18,9 @@ This script opens a file for writing, seeks at the desired position
 (or file size) and truncates the file there. Can be handy while
 playing with KVM / qemu / bochs / loopback images.
 
-Tested on linux-2.6 only.
+Tested on linux-2.6+ only.
+
+NB: Check fallocate from util-linux, may work better for you.
 
 Author: Doncho N. Gunchev <gunchev at gmail dot com>
 Based on Brad Watson's work mkimage.py from
@@ -30,23 +32,21 @@ import os.path
 import re
 import sys
 
-__version__   = "0.2"
+__version__   = "0.3"
 __author__    = "Doncho Gunchev <gunchev@gmail.com>, Brad Watson"
-__depends__   = ['Python-2.4']
+__depends__   = ['Python-3']
 #__copyright__ = """Have to ask Brad Watson, GPL?"""
 
 
 class MkSparseError(Exception):
     """MkSpace errors"""
 
-    pass
-
 
 def mk_sparse(file_name, file_size):
-    """ Create a sparse file by truncating it at given position"""
+    """Create a sparse file by truncating it at given position"""
     try:
         sparse_file = open(sys.argv[1],"wb+")
-    except (IOError, OSError), exc:
+    except (IOError, OSError) as exc:
         raise MkSparseError("Error: Can't create file '" + file_name + "':\n"
                 + str(exc))
     else:
@@ -54,7 +54,7 @@ def mk_sparse(file_name, file_size):
             # Note that I don't wan (you too) to write() anything in the file
             # because this will consume at least one sector/block.
             sparse_file.truncate(int(file_size))
-        except (IOError, OSError), exc:
+        except (IOError, OSError) as exc:
             try:
                 sparse_file.close() # clean the mess...
                 os.unlink(sys.argv[1])
@@ -64,7 +64,7 @@ def mk_sparse(file_name, file_size):
                     % (file_name, str(exc)))
     try:
         sparse_file.close()
-    except (IOError, OSError), exc:
+    except (IOError, OSError) as exc:
         raise MkSparseError("Error: Can't close '%s'\n%s" % (file_name,
                 str(exc)))
 
@@ -74,9 +74,9 @@ def main():
 
     if len(sys.argv) != 3:
         # .pyo (docstrings stripped) workaround
-        print >> sys.stderr, (__doc__ and __doc__
-                or "Usage: mksparse.py <image-name> <size>[kmg]")
-        print >> sys.stderr, "Version:", __version__
+        print((__doc__ and __doc__
+                or "Usage: mksparse.py <image-name> <size>[kmg]"), file=sys.stderr)
+        print("Version:", __version__, file=sys.stderr)
         sys.exit(1)
 
     # 'Process' command line parameters
@@ -86,19 +86,19 @@ def main():
     try:
         (size, dim) = re.match('^(\d+)([KkMmGg])?$', file_size).groups()
     except TypeError:
-        print >> sys.stderr, (sys.argv[0] + ': '
-            + "Bad image size given: " + repr(file_size))
+        print((sys.argv[0] + ': '
+            + "Bad image size given: " + repr(file_size)), file=sys.stderr)
         sys.exit(2)
 
     # Check if the file exists, -f (force) would be a good parameter
     if os.path.exists(file_name):
-        print >> sys.stderr, (sys.argv[0] + ': '
-            + ("Error: file (directory) '%s' already exists!" % (file_name)))
+        print((sys.argv[0] + ': '
+            + ("Error: file (directory) '%s' already exists!" % (file_name))), file=sys.stderr)
         sys.exit(3)
 
     dim = dim.lower()
     # Calculate size in bytes
-    size = long(size)
+    size = int(size)
     if   dim == 'k':
         size *= 1024
     elif dim == 'm':
@@ -106,15 +106,15 @@ def main():
     elif dim == 'g':
         size *= 1024 * 1024 * 1024
     elif dim != None:
-        print >> sys.stderr, (sys.argv[0] + ': '
-            + "Internal error: size modifier " + repr(dim) + " not handled.")
+        print((sys.argv[0] + ': '
+            + "Internal error: size modifier " + repr(dim) + " not handled."), file=sys.stderr)
         sys.exit(4)
 
     file_size = size
     try:
         mk_sparse(file_name, file_size)
-    except MkSparseError, exc:
-        print >> sys.stderr, sys.argv[0] + ': ' + str(exc)
+    except MkSparseError as exc:
+        print(sys.argv[0] + ': ' + str(exc), file=sys.stderr)
         sys.exit(1)
 
 
