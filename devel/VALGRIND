@@ -4,4 +4,4 @@
 
 G_SLICE=always-malloc G_DEBUG=gc-friendly \
 /usr/bin/valgrind --tool=memcheck --trace-children=no --leak-check=full --leak-resolution=high --num-callers=32 --max-stackframe=20982960 \
-    --track-fds=yes --track-origins=no --error-exitcode=1 --show-reachable=no"$@"
+    --track-fds=yes --track-origins=no --error-exitcode=1 --show-reachable=no "$@"
