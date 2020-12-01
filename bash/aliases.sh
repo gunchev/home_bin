@@ -18,3 +18,5 @@ alias grep='grep --colour=auto'
 
 # color less (restricted)
 alias less='less -R'
+
+alias ip='ip --color=auto'
