@@ -1,5 +1,23 @@
 #!/bin/bash
 
+# /usr/share/dbus-1/services/org.freedesktop.portal.Tracker.service
+# /etc/xdg/autostart/tracker-miner-fs-3.desktop
+# /etc/xdg/autostart/tracker-miner-rss-3.desktop
+#/usr/lib/systemd/user/tracker-extract-3.service
+#/usr/lib/systemd/user/tracker-miner-fs-3.service
+#/usr/lib/systemd/user/tracker-miner-fs-control-3.service
+#/usr/lib/systemd/user/tracker-miner-rss-3.service
+#/usr/lib/systemd/user/tracker-writeback-3.service
+#/usr/share/dbus-1/services/org.freedesktop.Tracker3.Miner.Extract.service
+#/usr/share/dbus-1/services/org.freedesktop.Tracker3.Miner.Files.Control.service
+#/usr/share/dbus-1/services/org.freedesktop.Tracker3.Miner.Files.service
+#/usr/share/dbus-1/services/org.freedesktop.Tracker3.Miner.RSS.service
+#/usr/share/dbus-1/services/org.freedesktop.Tracker3.Writeback.service
+#/usr/share/tracker3-miners/miners/org.freedesktop.Tracker3.Miner.Files.service
+#/usr/share/tracker3-miners/miners/org.freedesktop.Tracker3.Miner.RSS.service
+
+
+
 # Disable tracker in KDE, Gnome and Mate
 TRACKERAUTOSTARTS=(tracker-extract tracker-miner-apps tracker-miner-fs tracker-miner-user-guides tracker-store)
 
