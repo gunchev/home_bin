@@ -1,0 +1,8 @@
+EDITOR=mcedit
+export EDITOR
+
+HISTSIZE=20480
+export HISTSIZE
+
+FZF_DEFAULT_OPTS="--history-size=$HISTSIZE"
+export FZF_DEFAULT_OPTS

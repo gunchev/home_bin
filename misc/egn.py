@@ -5,17 +5,17 @@
 This program check if the given EGN (Universal Citizen Number)
 is valid in Bulgaria. All EGNs are accepted as arguments.
 
-You can also import egn_check from this file.
+You can also import and use the egn_check function.
 """
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 __author__ = "Doncho Gunchev <gunchev@gmail.com>"
 __depends__ = ["Python-3"]
 __copyright__ = "GPLv2+/BSD"
 
 
-def egn_check(egn):
-    '''Check if the given EGN (Bulgarian Universal Citizen Number) is valid.'''
+def egn_check(egn) -> bool:
+    """Check if the given EGN (Bulgarian Universal Citizen Number) is valid."""
     if len(egn) != 10:
         return False
     multipliers = (2, 4, 8, 5, 10, 9, 7, 3, 6)
@@ -30,12 +30,12 @@ def egn_check(egn):
 
 if __name__ == '__main__':
     import sys
-    print("EGN check version " + __version__ + ", by Mr.700")
+    print(f"EGN check version {__version__}, by {__author__}")
     if len(sys.argv) < 2:
-        print("\n" + __doc__.strip())
+        print(f"\n{__doc__.strip()}")
     else:
         for arg in sys.argv[1:]:
             if egn_check(arg):
-                print(arg + " - OK")
+                print(f'{arg} - OK')
             else:
-                print(arg + " - BAD")
+                print(f'{arg} - BAD')

@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-"""\
+"""
 ==============================================
 mksparse.py - sparse file / disk image creator
 ==============================================
@@ -35,19 +35,21 @@ import sys
 __version__   = "0.3"
 __author__    = "Doncho Gunchev <gunchev@gmail.com>, Brad Watson"
 __depends__   = ['Python-3']
-# __copyright__ = """Ask Brad Watson, I want nothing."""
+
+
+# __copyright__ = 'Ask Brad Watson, I want nothing.'
 
 
 class MkSparseError(Exception):
     """MkSpace errors"""
 
 
-def mk_sparse(file_name, file_size):
+def mk_sparse(file_name: str, file_size: int):
     """Create a sparse file by truncating it at given position"""
     try:
         sparse_file = open(file_name, 'wb+')
     except EnvironmentError as exc:
-        raise MkSparseError("Error: Can't create file {!r}:\n\t{}".format(file_name, exc))
+        raise MkSparseError("Error: Can't create file {file_name!r}:\n\t{exc}")
 
     try:
         # Note that I don't want (you too) to write() anything in the file
@@ -62,34 +64,27 @@ def mk_sparse(file_name, file_size):
             sparse_file.close()
         except EnvironmentError:
             pass
-        raise MkSparseError("Error: Can't truncate {!r}:\n\t{}".format(file_name, exc))
+        raise MkSparseError("Error: Can't truncate {file_name!r}:\n\t{exc}")
 
     try:
         sparse_file.close()
     except EnvironmentError as exc:
-        raise MkSparseError("Error: Can't close {!r}:\n\t{}".format(file_name, exc))
+        raise MkSparseError(f"Error: Can't close {file_name!r}:\n\t{exc}")
 
 
-def parse_file_size(file_size):
-    '''file size validation and parsing'''
+def parse_file_size(file_size: str) -> int:
+    """file size validation and parsing"""
+    xlt: dict[str, int] = dict(k=2 ** 10, m=2 ** 20, g=2 ** 30, t=2 ** 40, p=2 ** 50, e=2 ** 60, z=2 ** 70, y=2 ** 80)
     try:
-        size_str, dim = re.match('^(\\d+)([kmgt])?$', file_size).groups()
+        size_str, dim = re.match('^(\\d+)([' + ''.join(xlt.keys()) + '])?$', file_size).groups()
     except AttributeError:  # if it did not match we get None, which has no .groups...
         raise ValueError('Bad image size given: {!r}'.format(file_size))
 
-    size = int(size_str)  # can not raise...
+    size: int = int(size_str)  # can not raise...
     if dim is None:
         return size
-    if dim == 'k':
-        return size * 1024
-    if dim == 'm':
-        return size * 1024 * 1024
-    if dim == 'g':
-        return size * 1024 * 1024 * 1024
-    if dim == 't':
-        return size * 1024 * 1024 * 1024 * 1024
 
-    raise NotImplementedError('Size modifier {!r} not handled.'.format(dim))
+    return size * xlt[dim]
 
 
 def main():
@@ -103,25 +98,24 @@ def main():
         sys.exit(1)
 
     # 'Process' command line parameters
-    file_name = sys.argv[1]
-    file_size = sys.argv[2]
+    file_name: str = sys.argv[1]
+    file_size: str = sys.argv[2]
+
+    def err_exit(reason: str, code: int):
+        """Print error (exception) and exit with error code"""
+        print(f'{my_name}: {reason}', file=sys.stderr)
+        sys.exit(code)
 
     # Check if the file exists, -f (force) would be a good parameter to add
     if os.path.exists(file_name):
-        print("{}: Error: file (directory) {!r} already exists!".format(my_name, file_name), file=sys.stderr)
-        sys.exit(1)
+        err_exit(f'Error: file/directory {file_name!r} already exists!', 17)
 
     try:
         mk_sparse(file_name, parse_file_size(file_size))
     except MkSparseError as exc:
-        print('{}: {}'.format(my_name, exc), file=sys.stderr)
-        sys.exit(2)
-    except ValueError as exc:
-        print('{}: {}'.format(my_name, exc), file=sys.stderr)
-        sys.exit(3)
-    except NotImplementedError as exc:
-        print('{}: {}'.format(my_name, exc), file=sys.stderr)
-        sys.exit(4)
+        err_exit(str(exc), 1)
+    except (ValueError, KeyError) as exc:
+        err_exit(str(exc), 64)  # EX_USAGE
 
 
 if __name__ == "__main__":
